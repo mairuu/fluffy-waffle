@@ -2,6 +2,7 @@ import Head from 'next/head';
 import { useState } from 'react';
 import { ColorSchemeProvider, MantineProvider } from '@mantine/core';
 import type { AppProps } from 'next/app';
+import { getCookie, setCookies } from 'cookies-next';
 import type { GetServerSidePropsContext, NextPage } from 'next/types';
 import type { ColorScheme } from '@mantine/core';
 
@@ -24,6 +25,7 @@ export default function App(props: NekoAppProps) {
   const toggleColorScheme = (value?: ColorScheme) => {
     const nextColorScheme = value || (colorScheme === 'dark' ? 'light' : 'dark');
     setColorScheme(nextColorScheme);
+    setCookies('mantine-color-scheme', nextColorScheme, { maxAge: 60 * 60 * 24 * 30 });
   };
 
   const getLayout = Component.getLayout ?? ((page) => page);
@@ -52,5 +54,5 @@ export default function App(props: NekoAppProps) {
 }
 
 App.getInitialProps = ({ ctx }: { ctx: GetServerSidePropsContext }) => ({
-  colorScheme: 'dark',
+  colorScheme: getCookie('mantine-color-scheme', ctx) || 'dark',
 });
