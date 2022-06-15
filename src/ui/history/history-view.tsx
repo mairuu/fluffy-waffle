@@ -10,9 +10,9 @@ import { useHistoryPresentator } from './history-presentator';
 const HistoryView = () => {
   const { grouped, isLoading } = useHistoryPresentator();
 
-  if (isLoading) return null;
+  if (isLoading || !grouped) return null;
 
-  if (!grouped?.length)
+  if (grouped.length === 0)
     return (
       <ScreenState
         expression="(-ω-、)"

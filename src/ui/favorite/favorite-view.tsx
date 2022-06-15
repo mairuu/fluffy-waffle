@@ -14,9 +14,9 @@ export const LibrarayView = (props: LibraryViewProps) => {
   const { type } = props;
   const { favorites, isLoading } = useFavoritePresentator(type);
 
-  if (isLoading) return null;
+  if (isLoading || !favorites) return null;
 
-  if (!favorites?.length)
+  if (favorites.length === 0)
     return (
       <ScreenState expression="( *´°`)" message="Oh crap, you've got nothing..." />
     );

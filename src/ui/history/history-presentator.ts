@@ -16,11 +16,11 @@ export const useHistoryPresentator = () => {
 
   const grouped = useMemo(() => {
     const grouped: [Date, Activity[]][] = [];
-
     const data = resouce?.data;
-    if (!data) return grouped;
 
-    data?.forEach((d) => {
+    if (!data) return undefined;
+
+    data.forEach((d) => {
       const now = new Date(d.readAt);
       if (grouped[grouped.length - 1]?.[0].getDate() !== now.getDate()) {
         grouped.push([now, [d]]);

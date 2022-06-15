@@ -28,17 +28,7 @@ export const ProjectView = (props: ProjectViewProps) => {
   const presentator = useProjectPresentator(props.projectId);
   const { project, isError } = presentator;
   const { info, chapters } = project || {};
-  const {
-    title,
-    synopsis,
-    author,
-    releaseDate,
-    views,
-    genres,
-    contributors,
-    medias,
-    thumbnailUrl = '',
-  } = info || {};
+
   const loaded = !!project && !isError;
 
   const Details = (
@@ -57,12 +47,12 @@ export const ProjectView = (props: ProjectViewProps) => {
       })}
     >
       <IconUser />
-      <span>{loaded ? author : <Skeleton height={12} width="12ch" />}</span>
+      <span>{loaded ? info?.author : <Skeleton height={12} width="12ch" />}</span>
 
       <IconRocket />
       <span>
         {loaded ? (
-          releaseDate && format(new Date(releaseDate || 0), 'MMM yyyy')
+          info?.releaseDate && format(new Date(info.releaseDate || 0), 'MMM yyyy')
         ) : (
           <Skeleton height={12} width="12ch" />
         )}
@@ -70,14 +60,14 @@ export const ProjectView = (props: ProjectViewProps) => {
 
       <IconEye />
       <span>
-        {loaded ? views?.toLocaleString() : <Skeleton height={12} width="12ch" />}
+        {loaded ? info?.views?.toLocaleString() : <Skeleton height={12} width="12ch" />}
       </span>
     </Paper>
   );
 
   const Synopsis = (
     <Blockquote sx={{ fontSize: 'clamp(13px, 2vw, 16px)' }}>
-      {loaded ? synopsis : <Skeleton height="10ch" />}
+      {loaded ? info?.synopsis : <Skeleton height="10ch" />}
     </Blockquote>
   );
 
@@ -90,8 +80,8 @@ export const ProjectView = (props: ProjectViewProps) => {
         marginLeft: 64,
       }}
     >
-      {genres ? (
-        genres.map((e, i) => (
+      {loaded ? (
+        info?.genres.map((e, i) => (
           <Badge key={i} p="md" color="gray" radius="md" variant="filled">
             {e}
           </Badge>
@@ -116,7 +106,7 @@ export const ProjectView = (props: ProjectViewProps) => {
       </Text>
 
       {loaded ? (
-        contributors?.map((e, i) => (
+        info?.contributors?.map((e, i) => (
           <Group mt="md" key={i}>
             <Avatar size="lg" src={e.profileUrl} />
             <Text>{e.displayName}</Text>
@@ -138,7 +128,7 @@ export const ProjectView = (props: ProjectViewProps) => {
   );
 
   const CoverTab =
-    medias && medias.length ? (
+    info?.medias && info.medias.length ? (
       <Tabs.Tab label="Covers">
         <Box
           sx={{
@@ -147,7 +137,7 @@ export const ProjectView = (props: ProjectViewProps) => {
             gridTemplateColumns: 'repeat(auto-fill, minmax(180px, 1fr))',
           }}
         >
-          {medias.map((e, i) => (
+          {info?.medias.map((e, i) => (
             <ProjectThumbnail key={i} src={e} />
           ))}
         </Box>
@@ -165,7 +155,7 @@ export const ProjectView = (props: ProjectViewProps) => {
           height: 'var(--mantine-header-height, 0px)',
         }}
       >
-        <ProjectBanner src={thumbnailUrl} bot="-280px" />
+        <ProjectBanner src={info?.thumbnailUrl || ''} bot="-280px" />
       </div>
 
       <Container
@@ -194,7 +184,7 @@ export const ProjectView = (props: ProjectViewProps) => {
             <ProjectThumbnail
               key={project?.info.id}
               style={{ borderRadius: 8, maxWidth: 260, margin: '0 auto' }}
-              src={thumbnailUrl}
+              src={info?.thumbnailUrl || ''}
             />
 
             <Text
@@ -210,7 +200,7 @@ export const ProjectView = (props: ProjectViewProps) => {
                 },
               })}
             >
-              {loaded ? title : <Skeleton height={30} m="auto" width="80%" />}
+              {loaded ? info?.title : <Skeleton height={30} m="auto" width="80%" />}
             </Text>
 
             <div
@@ -220,8 +210,16 @@ export const ProjectView = (props: ProjectViewProps) => {
                 gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
               }}
             >
-              <Button onClick={presentator.toggleFavorite}>
-                {project?.info.favorite ? 'Remove from libraray' : 'Add to libraray'}
+              <Button onClick={presentator.favorite.click}>
+                {presentator.favorite.label}
+              </Button>
+
+              <Button
+                leftIcon={presentator.next.icon}
+                onClick={presentator.next.click}
+                color="indigo"
+              >
+                {presentator.next.label}
               </Button>
             </div>
 
@@ -242,7 +240,7 @@ export const ProjectView = (props: ProjectViewProps) => {
               },
             })}
           >
-            {loaded ? title : <Skeleton height={32} my={4} width="90%" />}
+            {loaded ? info?.title : <Skeleton height={32} my={4} width="90%" />}
           </Text>
 
           <Divider />
