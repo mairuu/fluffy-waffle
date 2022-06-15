@@ -21,6 +21,8 @@ const useStyles = createStyles({
 
     '& img': {
       maxWidth: '100%',
+      width: 'auto !important',
+      height: 'auto !important',
     },
   },
 
